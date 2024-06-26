@@ -64,12 +64,10 @@ const KEYPAIR = [8,62,147,122,17,106,149,72,88,243,138,18,31,142,80,233,242,75,2
  * The state of a greeting account managed by the hello world program
  */
 class Account {
-  sum = 0;
-  difference = 0;
-  constructor(fields: {sum: number, difference: number} | undefined = undefined) {
+  result = 0;
+  constructor(fields: {result: number} | undefined = undefined) {
     if (fields) {
-      this.sum = fields.sum;
-      this.difference = fields.difference;
+      this.result = fields.result;
     }
   }
 }
@@ -78,7 +76,7 @@ class Account {
  * Borsh schema definition for greeting accounts
  */
 const Schema = new Map([
-  [Account, { kind: "struct", fields: [["sum", "u32"], ["difference", "u32"]]}]
+  [Account, { kind: "struct", fields: [["result", "u32"]]}]
 ]);
 
 
@@ -119,12 +117,13 @@ export async function establishPayer(): Promise<void> {
 
   let lamports = await connection.getBalance(payer.publicKey);
   if (lamports < fees) {
+    console.log(payer.publicKey)
     // If current balance is not enough to pay for fees, request an airdrop
-    const sig = await connection.requestAirdrop(
-      payer.publicKey,
-      fees + 2 * LAMPORTS_PER_SOL - lamports,
-    );
-    await connection.confirmTransaction(sig);
+    // const sig = await connection.requestAirdrop(
+    //   payer.publicKey,
+    //   fees + 2 * LAMPORTS_PER_SOL - lamports,
+    // );
+    // await connection.confirmTransaction(sig);
     lamports = await connection.getBalance(payer.publicKey);
   }
 
@@ -168,7 +167,7 @@ export async function checkProgram(): Promise<void> {
   console.log(`Using program ${programId.toBase58()}`);
 
   // Derive the address (public key) of a greeting account from the program so that it's easy to find later.
-  const GREETING_SEED = 'calculator';
+  const GREETING_SEED = 'calculatorV3';
   greetedPubkey = await PublicKey.createWithSeed(
     payer.publicKey,
     GREETING_SEED,
@@ -220,8 +219,7 @@ function numberToBuffer(i: number) {
 export async function sayHello(): Promise<void> {
   console.log('Sending data to', greetedPubkey.toBase58());
 
-  const buffers = [Buffer.from(Int8Array.from([0])), numberToBuffer(15), numberToBuffer(12)]
-  console.log(buffers)
+  const buffers = [Buffer.from(Int8Array.from([1])), numberToBuffer(15), numberToBuffer(12)]
   const data = Buffer.concat(buffers);
 
   const instruction = new TransactionInstruction({
@@ -250,6 +248,6 @@ export async function reportGreetings(): Promise<void> {
     accountInfo.data,
   );
   console.log(`
-    ${greetedPubkey.toBase58()} has sum: ${greeting.sum} and difference: ${greeting.difference}
+    ${greetedPubkey.toBase58()} has result: ${greeting.result}
   `);
 }

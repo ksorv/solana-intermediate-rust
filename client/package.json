@@ -4,15 +4,16 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "run": "ts-node src/client.ts"
+    "client": "ts-node src/client.ts"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@solana/web3.js":"^1.33.0",
+    "@solana/web3.js": "^1.33.0",
     "bn.js": "^5.2.1",
     "borsh": "^0.7.0",
+    "ts-node": "^10.9.2",
     "yaml": "^2.0.0"
   },
   "devDependencies": {
