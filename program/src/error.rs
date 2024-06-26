@@ -13,6 +13,8 @@ pub enum Error {
     /// Amount Overflow
     #[error("Overflow")]
     Overflow,
+    #[error("Unknown Operation")]
+    UnknownOperation,
 }
 
 impl From<Error> for ProgramError {
